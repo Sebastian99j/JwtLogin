@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace ApprenticeshipsLogin.Database
 {
-    public class FakeDatabase
+    public class FakeDatabase : IFakeDatabase
     {
         public List<DbUsers> Users { get; set; } = new List<DbUsers>();
         public List<DbUserRoles> Roles { get; set; } = new List<DbUserRoles>();
@@ -32,7 +32,8 @@ namespace ApprenticeshipsLogin.Database
             {
                 var removeElement = this.Users.IndexOf(User);
                 Users.RemoveAt(removeElement);
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.StackTrace);
             }

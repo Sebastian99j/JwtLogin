@@ -1,3 +1,4 @@
+using ApprenticeshipsLogin.Database;
 using ApprenticeshipsLogin.Middlewares;
 using ApprenticeshipsLogin.Models;
 using ApprenticeshipsLogin.Services;
@@ -6,6 +7,7 @@ using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using NLog.Web;
 using System.Reflection;
 using System.Text;
@@ -49,8 +51,9 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
 builder.Services.AddSingleton(authenticationSettings);
-builder.Services.AddSingleton<IAccountService, AccountService>();
+builder.Services.AddTransient<IAccountService, AccountService>();
 builder.Services.AddScoped<IPasswordHasher<DbUsers>, PasswordHasher<DbUsers>>();
+builder.Services.AddTransient<IFakeDatabase, FakeDatabase>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers().AddFluentValidation();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
@@ -59,7 +62,18 @@ builder.Services.AddScoped<ErrorHandlingMiddleware>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = @"JWT Authorization header. \r\n\r\n Enter the token in the text input below."
+    });
+});
 
 var app = builder.Build();
 

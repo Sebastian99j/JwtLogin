@@ -13,12 +13,12 @@ namespace ApprenticeshipsLogin.Services
 {
     public class AccountService : IAccountService
     {
-        private readonly FakeDatabase _context;
+        private readonly IFakeDatabase _context;
         private readonly IPasswordHasher<DbUsers> _passwordHasher;
         private readonly AuthenticationSettings _authenticationSettings;
-        public AccountService(IPasswordHasher<DbUsers> passwordHasher, AuthenticationSettings authenticationSettings)
+        public AccountService(IPasswordHasher<DbUsers> passwordHasher, AuthenticationSettings authenticationSettings, IFakeDatabase context)
         {
-            _context = new FakeDatabase(passwordHasher);
+            _context = context;
             _passwordHasher = passwordHasher;
             _authenticationSettings = authenticationSettings;
         }

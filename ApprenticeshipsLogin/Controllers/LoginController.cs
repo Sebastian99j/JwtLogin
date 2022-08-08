@@ -1,7 +1,9 @@
 ﻿using ApprenticeshipsLogin.Models.Commands;
 using ApprenticeshipsLogin.Models.Queries.Users;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace ApprenticeshipsLogin.Controllers
 {
@@ -35,6 +37,7 @@ namespace ApprenticeshipsLogin.Controllers
         }
 
         [HttpGet("users")]
+        [Authorize]
         public async Task<IActionResult> GetAllUsers()
         {
             var query = new GetAllUsersQuery();
