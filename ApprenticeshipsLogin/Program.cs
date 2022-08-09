@@ -39,6 +39,7 @@ builder.Services.AddAuthentication(option =>
     };
 });
 
+/*
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("ReactClient", policy =>
@@ -48,7 +49,8 @@ builder.Services.AddCors(options =>
         .WithOrigins(builder.Configuration["AllowedOrigins"]);
     });
 });
-
+*/
+builder.Services.AddCors();
 builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
 builder.Services.AddSingleton(authenticationSettings);
 builder.Services.AddTransient<IAccountService, AccountService>();
@@ -78,7 +80,12 @@ builder.Services.AddSwaggerGen(options =>
 var app = builder.Build();
 
 app.UseResponseCaching();
-app.UseCors("ReactClient");
+//app.UseCors("ReactClient");
+app.UseCors(x => x
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .SetIsOriginAllowed(origin => true) // allow any origin
+    .AllowCredentials());
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
